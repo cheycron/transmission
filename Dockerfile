@@ -4,7 +4,7 @@ FROM lsiobase/alpine:3.10
 ARG BUILD_DATE
 ARG VERSION
 LABEL build_version="Linuxserver.io version:- ${VERSION} Build-date:- ${BUILD_DATE}"
-LABEL maintainer="Cheycron Blaine <cheycron@gmail.com"
+LABEL maintainer="Cheycron Blaine"
 
 RUN \
  echo "**** install packages ****" && \
@@ -49,9 +49,10 @@ RUN \
  rm -rf \
 	/tmp/*
 
+
 # copy local files
 COPY root/ /
 
 # ports and volumes
 EXPOSE 9091 51413
-VOLUME /config /downloads /watch /temporals
+VOLUME /config /downloads

@@ -1,0 +1,38 @@
+version: "3.6"
+
+services:
+  app:
+    image: linuxserver/transmission:latest
+    container_name: Transmission
+    restart: unless-stopped
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.transmission-secured.entrypoints: "web-secure"
+      traefik.http.routers.transmission-secured.middlewares: "sslHeaders@file"
+      traefik.http.routers.transmission-secured.rule: "Host(`torrent.cheycron.com`)"
+      traefik.http.routers.transmission-secured.tls.certresolver: "letsencrypt"
+      traefik.http.routers.transmission.entrypoints: "web"
+      traefik.http.routers.transmission.middlewares: "redirectHttps@file"
+      traefik.http.routers.transmission.rule: "Host(`torrent.cheycron.com`)"
+      traefik.http.services.transmission.loadbalancer.server.port: "9091"
+    ports:
+      - "57544:51413/udp"
+      - "57544:51413/tcp"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Buenos_Aires
+      - TRANSMISSION_WEB_HOME=/transmission-web-control/ #optional
+      - USER=cheycron #optional
+      - PASS=CnypcpoW #optional
+    volumes:
+      - /opt/docker/transmission:/config
+      - /mnt/download:/downloads
+
+volumes:
+  config:
+
+networks:
+  default:
+    external:
+      name: Isolated
